@@ -1,966 +1,1275 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CodeFlow | Visual Development Platform</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>雷区舞王 · 激情版 v26.5.28</title>
     <style>
+        /* ================= 🎨 动态多主题架构 ================= */
+        :root {
+            --bg-gradient: linear-gradient(135deg, #e6f0fa 0%, #cbdbe9 50%, #a7c5df 100%);
+            --glass-panel: rgba(245, 249, 253, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.7);
+            --glass-shadow: rgba(70, 110, 150, 0.2);
+            --text-color: #1e3d6b;
+            --cell-top: #8cb6ec;
+            --cell-mid: #4a82d6;
+            --cell-bottom: #2358ad;
+            --cell-open: #edf3fa;
+            --cell-open-border: #b9cee6;
+            --accent-color: #ff3b75;
+        }
+
+        [data-theme="aurora"] {
+            --bg-gradient: linear-gradient(135deg, #121c26 0%, #1a2936 50%, #0d151c 100%);
+            --glass-panel: rgba(26, 41, 54, 0.85);
+            --glass-border: rgba(64, 224, 208, 0.3);
+            --glass-shadow: rgba(0, 0, 0, 0.5);
+            --text-color: #40e0d0;
+            --cell-top: #52c4b9;
+            --cell-mid: #2c968c;
+            --cell-bottom: #16615a;
+            --cell-open: #18232c;
+            --cell-open-border: #2c968c;
+            --accent-color: #ff007f;
+        }
+
+        [data-theme="peach"] {
+            --bg-gradient: linear-gradient(135deg, #fff2eb 0%, #ffe3d5 50%, #ffd4c0 100%);
+            --glass-panel: rgba(255, 255, 251, 0.9);
+            --glass-border: rgba(255, 160, 122, 0.4);
+            --glass-shadow: rgba(233, 130, 89, 0.15);
+            --text-color: #e96d53;
+            --cell-top: #ffb09c;
+            --cell-mid: #f3866a;
+            --cell-bottom: #d65536;
+            --cell-open: #fff9f6;
+            --cell-open-border: #ffcfc3;
+            --accent-color: #d6366f;
+        }
+
+        [data-theme="matcha"] {
+            --bg-gradient: linear-gradient(135deg, #f0f4ee 0%, #e1ebd9 50%, #cedbc4 100%);
+            --glass-panel: rgba(246, 249, 244, 0.9);
+            --glass-border: rgba(143, 188, 143, 0.5);
+            --glass-shadow: rgba(100, 130, 90, 0.15);
+            --text-color: #4f7942;
+            --cell-top: #a1c797;
+            --cell-mid: #73a967;
+            --cell-bottom: #4b8040;
+            --cell-open: #f7faf5;
+            --cell-open-border: #c3dec0;
+            --accent-color: #e96d53;
+        }
+
+        [data-theme="lavender"] {
+            --bg-gradient: linear-gradient(135deg, #f3effa 0%, #e6def3 50%, #d5caeb 100%);
+            --glass-panel: rgba(249, 246, 253, 0.9);
+            --glass-border: rgba(186, 162, 235, 0.4);
+            --glass-shadow: rgba(120, 90, 180, 0.1);
+            --text-color: #7b52ab;
+            --cell-top: #c0abf1;
+            --cell-mid: #9373eb;
+            --cell-bottom: #6643bd;
+            --cell-open: #fbf9ff;
+            --cell-open-border: #dfd5f7;
+            --accent-color: #ff4500;
+        }
+
+        [data-theme="obsidian"] {
+            --bg-gradient: linear-gradient(135deg, #1c1c1c 0%, #252525 50%, #151515 100%);
+            --glass-panel: rgba(40, 40, 40, 0.85);
+            --glass-border: rgba(212, 175, 55, 0.3);
+            --glass-shadow: rgba(0, 0, 0, 0.6);
+            --text-color: #d4af37;
+            --cell-top: #e5c158;
+            --cell-mid: #b3922e;
+            --cell-bottom: #7c641b;
+            --cell-open: #222222;
+            --cell-open-border: #b3922e;
+            --accent-color: #ff3344;
+        }
+
+        [data-theme="harbor"] {
+            --bg-gradient: linear-gradient(135deg, #eceef1 0%, #dcdfe4 50%, #cbcfd5 100%);
+            --glass-panel: rgba(243, 245, 247, 0.9);
+            --glass-border: rgba(144, 156, 172, 0.4);
+            --glass-shadow: rgba(80, 95, 115, 0.15);
+            --text-color: #4a5568;
+            --cell-top: #a0aec0;
+            --cell-mid: #718096;
+            --cell-bottom: #4a5568;
+            --cell-open: #f7fafc;
+            --cell-open-border: #cbd5e0;
+            --accent-color: #e53e3e;
+        }
+
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
         }
-        
+
         body {
-            font-family: 'Roboto', sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background-color: #f9fbfd;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft YaHei", sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: background 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+            position: relative;
         }
-        
-        h1, h2, h3, h4 {
-            font-family: 'Poppins', sans-serif;
-            font-weight: 600;
-            line-height: 1.3;
-        }
-        
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        /* Header & Navigation */
+
         header {
-            background-color: #fff;
-            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
-            position: fixed;
-            width: 100%;
-            z-index: 1000;
-        }
-        
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 0;
-        }
-        
-        .logo {
+            height: 45px;
             display: flex;
             align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid var(--glass-border);
+            box-shadow: 0 1px 5px var(--glass-shadow);
+            z-index: 10;
         }
-        
-        .logo-icon {
-            color: #4361ee;
-            font-size: 28px;
-            margin-right: 10px;
+
+        header h1 {
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.4);
         }
-        
-        .logo-text {
-            font-family: 'Poppins', sans-serif;
-            font-size: 24px;
-            font-weight: 700;
-            color: #333;
-        }
-        
-        .logo-text span {
-            color: #4361ee;
-        }
-        
-        .nav-links {
-            display: flex;
-            list-style: none;
-        }
-        
-        .nav-links li {
-            margin-left: 30px;
-        }
-        
-        .nav-links a {
-            text-decoration: none;
-            color: #555;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-        
-        .nav-links a:hover {
-            color: #4361ee;
-        }
-        
-        .cta-button {
-            background-color: #4361ee;
-            color: white;
-            border: none;
-            padding: 12px 28px;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
-        }
-        
-        .cta-button:hover {
-            background-color: #3a56d4;
-            transform: translateY(-2px);
-        }
-        
-        .mobile-menu-btn {
+
+        /* 📱 手机端专用独立控制条（PC隐藏） */
+        .mobile-quick-bar {
             display: none;
-            background: none;
-            border: none;
-            font-size: 24px;
-            color: #333;
-            cursor: pointer;
-        }
-        
-        /* Hero Section */
-        .hero {
-            padding: 150px 0 100px;
-            background: linear-gradient(135deg, #f0f4ff 0%, #f9fbfd 100%);
-        }
-        
-        .hero-content {
-            display: flex;
-            align-items: center;
             justify-content: space-between;
+            align-items: center;
+            padding: 6px 12px;
+            background: var(--glass-panel);
+            border-bottom: 1px solid var(--glass-border);
+            gap: 8px;
+            z-index: 9;
         }
-        
-        .hero-text {
-            flex: 1;
-            padding-right: 40px;
+        .mobile-drawer {
+            display: none;
+            background: var(--glass-panel);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 10px;
+            max-height: 250px;
+            overflow-y: auto;
+            gap: 10px;
         }
-        
-        .hero-text h1 {
-            font-size: 48px;
-            margin-bottom: 20px;
-            color: #222;
-        }
-        
-        .hero-text h1 span {
-            color: #4361ee;
-        }
-        
-        .hero-text p {
-            font-size: 18px;
-            color: #666;
-            margin-bottom: 30px;
-            max-width: 600px;
-        }
-        
-        .hero-buttons {
+
+        /* 🖥️ PC 样式主体架构 */
+        .main-container {
             display: flex;
-            gap: 15px;
+            flex-grow: 1;
+            height: calc(100vh - 45px);
+            position: relative;
+            padding: 12px;
+            gap: 12px;
         }
-        
-        .secondary-button {
-            background-color: white;
-            color: #4361ee;
-            border: 2px solid #4361ee;
-            padding: 12px 28px;
-            border-radius: 6px;
-            font-weight: 600;
+
+        .sidebar {
+            width: 230px;
+            min-width: 230px;
+            background: var(--glass-panel);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            box-shadow: 0 8px 25px var(--glass-shadow);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+        }
+
+        .game-viewport {
+            flex-grow: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            box-shadow: inset 0 0 20px rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 5px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 🖥️ 核心画布 */
+        #mine-canvas {
+            display: block;
+            border: 3px solid var(--glass-border);
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
             cursor: pointer;
-            transition: all 0.3s;
         }
-        
-        .secondary-button:hover {
-            background-color: #f0f4ff;
+
+        .win7-card {
+            background: rgba(255, 255, 255, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            padding: 10px;
+            box-shadow: inset 0 1px 2px rgba(255,255,255,0.3);
         }
-        
-        .hero-image {
-            flex: 1;
-            text-align: center;
-        }
-        
-        .hero-image img {
-            max-width: 100%;
-            border-radius: 10px;
-            box-shadow: 0 20px 40px rgba(67, 97, 238, 0.15);
-        }
-        
-        /* Features Section */
-        .section-title {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-        
-        .section-title h2 {
-            font-size: 36px;
-            color: #222;
-            margin-bottom: 15px;
-        }
-        
-        .section-title p {
-            color: #666;
-            max-width: 700px;
-            margin: 0 auto;
-        }
-        
-        .features {
-            padding: 100px 0;
-            background-color: white;
-        }
-        
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 40px;
-        }
-        
-        .feature-card {
-            background: #fff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        
-        .feature-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-        }
-        
-        .feature-icon {
-            background-color: #eef2ff;
-            color: #4361ee;
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-            font-size: 28px;
-        }
-        
-        .feature-card h3 {
-            font-size: 22px;
-            margin-bottom: 15px;
-        }
-        
-        .feature-card p {
-            color: #666;
-        }
-        
-        /* Benefits Section */
-        .benefits {
-            padding: 100px 0;
-            background-color: #f0f4ff;
-        }
-        
-        .benefits-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-        }
-        
-        .benefit-item {
-            text-align: center;
-            padding: 30px 20px;
-        }
-        
-        .benefit-icon {
-            color: #4361ee;
-            font-size: 40px;
-            margin-bottom: 20px;
-        }
-        
-        .benefit-item h3 {
-            font-size: 22px;
-            margin-bottom: 15px;
-        }
-        
-        .benefit-item p {
-            color: #666;
-        }
-        
-        /* Testimonials */
-        .testimonials {
-            padding: 100px 0;
-            background-color: white;
-        }
-        
-        .testimonial-slider {
-            max-width: 800px;
-            margin: 0 auto;
-            position: relative;
-        }
-        
-        .testimonial {
-            background: #f9fbfd;
-            padding: 40px;
-            border-radius: 10px;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        }
-        
-        .testimonial-text {
-            font-size: 18px;
-            font-style: italic;
-            margin-bottom: 30px;
-            color: #555;
-        }
-        
-        .testimonial-author {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .author-avatar {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background-color: #ddd;
-            margin-right: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+
+        .card-title {
+            font-size: 0.8rem;
             font-weight: bold;
-            color: #4361ee;
-            font-size: 24px;
+            margin-bottom: 6px;
+            border-bottom: 1px solid rgba(0,0,0,0.08);
+            padding-bottom: 3px;
         }
-        
-        .author-info h4 {
-            font-size: 18px;
+
+        button {
+            width: 100%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.7) 0%, rgba(240,240,240,0.4) 100%);
+            border: 1px solid var(--glass-border);
+            color: var(--text-color);
+            padding: 6px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        button:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.05);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+        }
+        button.active {
+            background: var(--cell-mid);
+            color: #fff;
+            border-color: var(--cell-bottom);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .theme-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 4px;
+        }
+        .theme-btn { font-size: 0.72rem; padding: 4px 2px; }
+
+        .sassy-marquee {
+            height: 38px;
+            background: rgba(0, 0, 0, 0.04);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            padding: 0 6px;
+            color: var(--text-color);
+            border-left: 3px solid var(--cell-mid);
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 5px;
+            font-size: 0.8rem;
         }
-        
-        .author-info p {
-            color: #777;
-            font-size: 14px;
+        .status-val {
+            font-family: Consolas, monospace;
+            font-weight: bold;
+            background: rgba(255,255,255,0.5);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: var(--text-color);
+            border: 1px solid rgba(0,0,0,0.05);
         }
-        
-        /* Pricing Section */
-        .pricing {
-            padding: 100px 0;
-            background-color: #f9fbfd;
-        }
-        
-        .pricing-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-        }
-        
-        .pricing-card {
-            background: white;
-            border-radius: 10px;
-            padding: 40px 30px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+
+        .row-input { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; font-size: 0.75rem; }
+        .row-input input { width: 50px; padding: 2px; text-align: center; border: 1px solid var(--glass-border); border-radius: 4px; background: rgba(255,255,255,0.4); color: var(--text-color); }
+
+        .rank-table { width: 100%; border-collapse: collapse; font-size: 0.72rem; text-align: center; }
+        .rank-table th { padding: 3px; border-bottom: 2px solid var(--glass-border); }
+        .rank-table td { padding: 4px 2px; border-bottom: 1px solid rgba(0,0,0,0.03); }
+
+        /* =================👑 绝对点对点高清浮空文字 ================= */
+        .crit-text {
+            position: fixed;
+            pointer-events: none;
+            font-family: "Impact", "Arial Black", "Microsoft YaHei", sans-serif;
+            font-weight: 900;
+            font-size: 26px;
+            color: #ff2266;
+            text-shadow: 0 0 4px #fff, 0 0 8px #fff, 2px 2px 2px rgba(0, 0, 0, 0.8);
+            z-index: 100000;
             text-align: center;
-            transition: transform 0.3s;
+            white-space: nowrap;
+            line-height: 1.2;
+            will-change: transform, opacity;
+            animation: critHighDefinitionFly 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
         }
-        
-        .pricing-card.featured {
-            border-top: 5px solid #4361ee;
-            transform: scale(1.05);
-            position: relative;
+
+        @keyframes critHighDefinitionFly {
+            0% { transform: translate(-50%, -20%) scale(0.5); opacity: 0; }
+            15% { transform: translate(-50%, -60%) scale(1.2); opacity: 1; }
+            30% { transform: translate(-50%, -70%) scale(1.0); opacity: 1; }
+            100% { transform: translate(-50%, -120%) scale(0.8); opacity: 0; }
         }
-        
-        .featured-badge {
-            position: absolute;
-            top: -12px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #4361ee;
-            color: white;
-            padding: 5px 20px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 600;
+
+        .shake-screen { animation: screenShake 0.15s linear 2; }
+        @keyframes screenShake {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(4px, -3px); }
+            75% { transform: translate(-4px, 3px); }
         }
-        
-        .pricing-card:hover {
-            transform: translateY(-10px);
+
+        /* ================= 👑 全屏结局弹窗 ================= */
+        .result-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            justify-content: center; align-items: center; z-index: 99999;
         }
-        
-        .pricing-card.featured:hover {
-            transform: scale(1.05) translateY(-10px);
-        }
-        
-        .plan-name {
-            font-size: 24px;
-            margin-bottom: 15px;
-            color: #333;
-        }
-        
-        .plan-price {
-            font-size: 48px;
-            font-weight: 700;
-            color: #4361ee;
-            margin-bottom: 20px;
-        }
-        
-        .plan-price span {
-            font-size: 16px;
-            color: #777;
-        }
-        
-        .plan-features {
-            list-style: none;
-            margin-bottom: 30px;
-        }
-        
-        .plan-features li {
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
-            color: #555;
-        }
-        
-        .plan-features li:last-child {
-            border-bottom: none;
-        }
-        
-        /* CTA Section */
-        .cta-section {
-            padding: 100px 0;
-            background: linear-gradient(135deg, #4361ee 0%, #3a56d4 100%);
-            text-align: center;
-            color: white;
-        }
-        
-        .cta-section h2 {
-            font-size: 36px;
-            margin-bottom: 20px;
-        }
-        
-        .cta-section p {
-            font-size: 18px;
-            max-width: 700px;
-            margin: 0 auto 30px;
-            opacity: 0.9;
-        }
-        
-        .cta-section .cta-button {
-            background-color: white;
-            color: #4361ee;
-            font-size: 16px;
-            padding: 15px 40px;
-        }
-        
-        .cta-section .cta-button:hover {
-            background-color: #f0f4ff;
-        }
-        
-        /* Footer */
-        footer {
-            background-color: #222;
-            color: #ccc;
-            padding: 70px 0 20px;
-        }
-        
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 40px;
-            margin-bottom: 50px;
-        }
-        
-        .footer-column h3 {
-            font-size: 20px;
-            color: white;
-            margin-bottom: 25px;
-        }
-        
-        .footer-links {
-            list-style: none;
-        }
-        
-        .footer-links li {
-            margin-bottom: 12px;
-        }
-        
-        .footer-links a {
-            color: #aaa;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-        
-        .footer-links a:hover {
-            color: #4361ee;
-        }
-        
-        .copyright {
-            text-align: center;
-            padding-top: 20px;
-            border-top: 1px solid #444;
-            font-size: 14px;
-            color: #888;
-        }
-        
-        /* Responsive Design */
-        @media (max-width: 992px) {
-            .hero-content {
-                flex-direction: column;
-            }
-            
-            .hero-text {
-                padding-right: 0;
-                margin-bottom: 50px;
-                text-align: center;
-            }
-            
-            .hero-text p {
-                margin: 0 auto 30px;
-            }
-            
-            .pricing-card.featured {
-                transform: none;
-            }
-            
-            .pricing-card.featured:hover {
-                transform: translateY(-10px);
-            }
-        }
-        
+        .result-overlay.win-state { background: rgba(253, 240, 245, 0.85); }
+        .result-overlay.lose-state { background: rgba(26, 22, 33, 0.9); }
+        .result-box { border-radius: 24px; padding: 35px 25px; text-align: center; max-width: 420px; width: 90%; position: relative; box-shadow: 0 25px 60px rgba(0,0,0,0.3); transform: scale(0.7); opacity: 0; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .result-overlay.active .result-box { transform: scale(1); opacity: 1; }
+        .win-state .result-box { background: #ffffff; border: 4px solid #ff3b75; color: #333; }
+        .lose-state .result-box { background: #251e2b; border: 4px solid #b373eb; color: #e5def3; }
+        .result-emoji { font-size: 3.5rem; margin-bottom: 10px; animation: bounceMoji 1s infinite alternate; }
+        @keyframes bounceMoji { 0% { transform: translateY(0); } 100% { transform: translateY(-10px); } }
+        .result-title { font-size: 1.6rem; font-weight: 900; margin-bottom: 15px; }
+        .win-state .result-title { background: linear-gradient(45deg, #ff007f, #7f00ff, #00bfff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .lose-state .result-title { background: linear-gradient(45deg, #f72585, #b5179e, #7209b7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .result-desc { font-size: 0.95rem; line-height: 1.6; font-weight: bold; margin-bottom: 20px; }
+        .result-box input { width: 100%; padding: 12px; margin-bottom: 18px; border: 2px solid var(--glass-border); text-align: center; border-radius: 10px; font-weight: bold; font-size: 1rem; }
+        .win-state input { border-color: #ffb3c6; color: #ff3b75; background: #fffafb; }
+        .lose-state input { border-color: #7209b7; color: #dfd5f7; background: #1a1520; }
+        .action-btn-group { display: flex; gap: 10px; justify-content: center; }
+        .action-btn { padding: 12px 24px; font-size: 0.92rem; font-weight: bold; border-radius: 10px; border: none; cursor: pointer; transition: all 0.2s; }
+        .btn-primary { background: linear-gradient(90deg, #ff3b75 0%, #7f00ff 100%); color: white; }
+        .btn-secondary { background: #4a3e56; color: #bca0dc; }
+
+        /* ================= 📱 手机端重排版样式（完全隔离） ================= */
         @media (max-width: 768px) {
-            .nav-links {
-                display: none;
+            body { height: 100vh; overflow: hidden; }
+            .main-container {
+                flex-direction: column; padding: 6px; gap: 6px;
+                height: calc(100vh - 85px);
+            }
+            .main-container .sidebar { display: none; }
+            .mobile-quick-bar { display: flex; }
+            
+            .mobile-mini-status {
+                display: flex !important; background: var(--glass-panel); border: 1px solid var(--glass-border);
+                border-radius: 10px; padding: 6px 10px; justify-content: space-between; align-items: center;
+                font-size: 0.78rem; font-weight: bold; gap: 5px;
+            }
+            .mobile-status-block { display: flex; align-items: center; gap: 4px; }
+
+            .game-viewport {
+                flex-grow: 1; height: 0; padding: 2px;
+                background: transparent; border: none; box-shadow: none;
+            }
+            #mine-canvas {
+                width: auto !important; height: auto !important;
+                max-width: 100%; max-height: 100%;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             }
             
-            .mobile-menu-btn {
-                display: block;
-            }
-            
-            .hero-text h1 {
-                font-size: 36px;
-            }
-            
-            .section-title h2 {
-                font-size: 30px;
-            }
-            
-            .hero-buttons {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .hero-buttons button {
-                width: 100%;
-                max-width: 300px;
+            .mobile-tip-text {
+                display: block !important; font-size: 0.7rem; text-align: center;
+                color: var(--text-color); opacity: 0.8; margin-top: 2px; font-weight: bold;
             }
         }
-        
-        @media (max-width: 576px) {
-            .hero {
-                padding: 130px 0 80px;
-            }
-            
-            .features, .benefits, .testimonials, .pricing, .cta-section {
-                padding: 70px 0;
-            }
-            
-            .feature-card, .testimonial {
-                padding: 25px;
-            }
-            
-            .plan-price {
-                font-size: 36px;
-            }
-        }
+
+        .mobile-mini-status, .mobile-tip-text { display: none; }
     </style>
 </head>
 <body>
-    <!-- Header & Navigation -->
+
     <header>
-        <div class="container">
-            <nav>
-                <div class="logo">
-                    <div class="logo-icon"><i class="fas fa-bezier-curve"></i></div>
-                    <div class="logo-text">Code<span>Flow</span></div>
-                </div>
-                
-                <ul class="nav-links">
-                    <li><a href="#features">Features</a></li>
-                    <li><a href="#benefits">Benefits</a></li>
-                    <li><a href="#testimonials">Testimonials</a></li>
-                    <li><a href="#pricing">Pricing</a></li>
-                    <li><a href="#">Resources</a></li>
-                </ul>
-                
-                <button class="cta-button">Start Free Trial</button>
-                <button class="mobile-menu-btn"><i class="fas fa-bars"></i></button>
-            </nav>
-        </div>
+        <h1>💎 雷区舞王 · 激情版 v26.5.28</h1>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="container">
-            <div class="hero-content">
-                <div class="hero-text">
-                    <h1>Build Apps Faster With <span>Visual Development</span></h1>
-                    <p>CodeFlow empowers teams to create enterprise-grade applications with minimal coding. Drag, drop, and connect components to build powerful web and mobile apps in record time.</p>
-                    <div class="hero-buttons">
-                        <button class="cta-button">Start Building Free</button>
-                        <button class="secondary-button">Watch Demo</button>
-                    </div>
-                </div>
-                <div class="hero-image">
-                    <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="CodeFlow Platform Interface">
-                </div>
+    <div class="mobile-quick-bar">
+        <button onclick="toggleMobileDrawer()" style="width: auto; padding: 4px 12px; background: rgba(255,255,255,0.4);">⚙️ 菜单</button>
+        <div id="mobile-marquee-box" style="flex-grow:1; font-size:0.75rem; font-weight:bold; text-align:center; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;">📢 盘它！长按插旗，点数字智能划开~</div>
+        <button onclick="resetAndRestart()" style="width: auto; padding: 4px 10px; background: linear-gradient(180deg, #fff 0%, #fee 100%); border-color:#fbb;">🔄 重来</button>
+    </div>
+
+    <div class="mobile-drawer" id="mobile-drawer">
+        <div class="win7-card" style="margin-bottom:6px;">
+            <div class="card-title">🎭 主题视觉精调</div>
+            <div class="theme-grid">
+                <button class="theme-btn" onclick="setTheme('crystal')">水晶蓝</button>
+                <button class="theme-btn" onclick="setTheme('aurora')">极光幽</button>
+                <button class="theme-btn" onclick="setTheme('peach')">柔蜜桃</button>
+                <button class="theme-btn" onclick="setTheme('matcha')">抹茶绿</button>
+                <button class="theme-btn" onclick="setTheme('lavender')">薰衣草</button>
+                <button class="theme-btn" onclick="setTheme('obsidian')">曜石金</button>
             </div>
         </div>
-    </section>
+        <div class="win7-card">
+            <div class="card-title">⚙️ 选择难度</div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:4px;">
+                <button onclick="changeModeMobile('easy')">初出茅庐</button>
+                <button onclick="changeModeMobile('medium')">轻车熟路</button>
+                <button onclick="changeModeMobile('hard')" class="active">巅峰生死</button>
+                <button onclick="changeModeMobile('custom')">自定义</button>
+            </div>
+        </div>
+    </div>
 
-    <!-- Features Section -->
-    <section class="features" id="features">
-        <div class="container">
-            <div class="section-title">
-                <h2>Powerful Features for Rapid Development</h2>
-                <p>CodeFlow provides all the tools you need to build, deploy, and scale applications without writing extensive code.</p>
+    <div class="main-container">
+        
+        <div class="sidebar">
+            <div class="win7-card">
+                <div class="card-title">🎭 柔和护眼主题</div>
+                <div class="theme-grid">
+                    <button class="theme-btn" onclick="setTheme('crystal')">水晶蓝</button>
+                    <button class="theme-btn" onclick="setTheme('aurora')">极光幽</button>
+                    <button class="theme-btn" onclick="setTheme('peach')">柔蜜桃</button>
+                    <button class="theme-btn" onclick="setTheme('matcha')">抹茶绿</button>
+                    <button class="theme-btn" onclick="setTheme('lavender')">薰衣草</button>
+                    <button class="theme-btn" onclick="setTheme('obsidian')">曜石金</button>
+                </div>
+                <button class="theme-btn" style="margin-top:4px;" onclick="setTheme('harbor')">高级冷灰</button>
+            </div>
+
+            <div class="win7-card">
+                <div class="card-title">⚙️ 战局难度</div>
+                <div style="display:flex; flex-direction:column; gap:4px;">
+                    <button onclick="changeMode('easy', this)">初出茅庐 (9×9)</button>
+                    <button onclick="changeMode('medium', this)">轻车熟路 (14×14)</button>
+                    <button onclick="changeMode('hard', this)" class="active">巅峰生死劫 (18×30)</button>
+                    <button onclick="toggleCustomPanel(this)">寂寞自定义</button>
+                </div>
+                <div id="custom-box" style="display:none; margin-top:8px; border-top:1px solid rgba(0,0,0,0.1); padding-top:6px;">
+                    <div class="row-input"><span>行数:</span><input type="number" id="inp-r" value="16"></div>
+                    <div class="row-input"><span>列数:</span><input type="number" id="inp-c" value="20"></div>
+                    <div class="row-input"><span>雷数:</span><input type="number" id="inp-m" value="40"></div>
+                    <button onclick="applyCustomSettings()" style="padding:2px; margin-top:4px;">灌注生成</button>
+                </div>
+            </div>
+
+            <div class="win7-card" style="margin-top:auto;">
+                <button onclick="resetAndRestart()" style="font-weight:bold; background: linear-gradient(180deg, #fff 0%, #fee 100%); border-color:#fbb;">🔄 换个姿势重来</button>
+            </div>
+        </div>
+
+        <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 6px; height: 100%;">
+            
+            <div class="mobile-mini-status">
+                <div class="mobile-status-block">🔮 剩余雷: <span id="m-lbl-mines" style="color:var(--accent-color)">80</span></div>
+                <div class="mobile-status-block">🔥 得分: <span id="m-lbl-score">0</span></div>
+                <div class="mobile-status-block">⏳ 时间: <span id="m-lbl-time">00:00</span></div>
+            </div>
+
+            <div class="game-viewport" id="game-viewport">
+                <canvas id="mine-canvas"></canvas>
             </div>
             
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-th-large"></i>
-                    </div>
-                    <h3>Visual Builder</h3>
-                    <p>Drag and drop UI components to design responsive interfaces. Connect data sources with simple point-and-click actions.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-database"></i>
-                    </div>
-                    <h3>Database Integration</h3>
-                    <p>Connect to any data source with built-in connectors. Automatically generate CRUD operations without writing SQL.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-mobile-alt"></i>
-                    </div>
-                    <h3>Cross-Platform</h3>
-                    <p>Build once, deploy everywhere. Generate applications for web, iOS, and Android from a single visual design.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-code"></i>
-                    </div>
-                    <h3>Extensible with Code</h3>
-                    <p>Add custom functionality with JavaScript when needed. Our platform doesn't limit your creativity or complexity.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-shield-alt"></i>
-                    </div>
-                    <h3>Enterprise Security</h3>
-                    <p>Built-in authentication, authorization, and data encryption. SOC2 compliant with enterprise-grade security features.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-rocket"></i>
-                    </div>
-                    <h3>One-Click Deployment</h3>
-                    <p>Deploy to cloud or on-premises with a single click. Automatic scaling and monitoring included.</p>
-                </div>
-            </div>
+            <div class="mobile-tip-text">💡 触碰手势：未翻开时轻碰翻开/长按插旗；已翻开时点数字可智能一键划开周围 ⚡</div>
         </div>
-    </section>
 
-    <!-- Benefits Section -->
-    <section class="benefits" id="benefits">
-        <div class="container">
-            <div class="section-title">
-                <h2>Why Choose CodeFlow?</h2>
-                <p>Join thousands of companies accelerating their digital transformation with low-code development.</p>
+        <div class="sidebar">
+            <div class="win7-card">
+                <div class="card-title">💓 撩骚互动频道</div>
+                <div class="sassy-marquee" id="sassy-marquee-box">📢 指尖轻触，开始激情对线...</div>
             </div>
-            
-            <div class="benefits-grid">
-                <div class="benefit-item">
-                    <div class="benefit-icon">
-                        <i class="fas fa-bolt"></i>
-                    </div>
-                    <h3>10x Faster Development</h3>
-                    <p>Build applications in days instead of months with visual development tools.</p>
-                </div>
-                
-                <div class="benefit-item">
-                    <div class="benefit-icon">
-                        <i class="fas fa-money-bill-wave"></i>
-                    </div>
-                    <h3>Reduce Costs by 70%</h3>
-                    <p>Lower development and maintenance costs with fewer resources required.</p>
-                </div>
-                
-                <div class="benefit-item">
-                    <div class="benefit-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <h3>Citizen Developers</h3>
-                    <p>Enable business users to build solutions with minimal IT assistance.</p>
-                </div>
-                
-                <div class="benefit-item">
-                    <div class="benefit-icon">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <h3>Scale Effortlessly</h3>
-                    <p>From prototype to enterprise-scale applications with the same platform.</p>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <!-- Testimonials -->
-    <section class="testimonials" id="testimonials">
-        <div class="container">
-            <div class="section-title">
-                <h2>Trusted by Industry Leaders</h2>
-                <p>See what our customers have to say about their experience with CodeFlow.</p>
+            <div class="win7-card">
+                <div class="card-title">📊 实时军情</div>
+                <div class="status-item"><span>未标雷数:</span><span class="status-val" id="lbl-mines">0</span></div>
+                <div class="status-item"><span>纯情得分:</span><span class="status-val" id="lbl-score">0</span></div>
+                <div class="status-item"><span>纠缠时间:</span><span class="status-val" id="lbl-time">00:00</span></div>
             </div>
-            
-            <div class="testimonial-slider">
-                <div class="testimonial">
-                    <div class="testimonial-text">
-                        "CodeFlow transformed how we deliver solutions to our business units. What used to take 6 months now takes 3 weeks. Our development team can focus on complex problems while business teams build their own solutions."
-                    </div>
-                    <div class="testimonial-author">
-                        <div class="author-avatar">SC</div>
-                        <div class="author-info">
-                            <h4>Sarah Chen</h4>
-                            <p>CTO, TechGrowth Inc.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <!-- Pricing Section -->
-    <section class="pricing" id="pricing">
-        <div class="container">
-            <div class="section-title">
-                <h2>Simple, Transparent Pricing</h2>
-                <p>Choose the plan that fits your needs. All plans include core features with no hidden fees.</p>
-            </div>
-            
-            <div class="pricing-grid">
-                <div class="pricing-card">
-                    <h3 class="plan-name">Starter</h3>
-                    <div class="plan-price">$29<span>/month</span></div>
-                    <ul class="plan-features">
-                        <li>Up to 5 users</li>
-                        <li>10 GB storage</li>
-                        <li>Basic components</li>
-                        <li>Community support</li>
-                        <li>1 production app</li>
-                    </ul>
-                    <button class="secondary-button">Get Started</button>
-                </div>
-                
-                <div class="pricing-card featured">
-                    <div class="featured-badge">Most Popular</div>
-                    <h3 class="plan-name">Professional</h3>
-                    <div class="plan-price">$89<span>/month</span></div>
-                    <ul class="plan-features">
-                        <li>Up to 25 users</li>
-                        <li>100 GB storage</li>
-                        <li>All components</li>
-                        <li>Priority support</li>
-                        <li>10 production apps</li>
-                        <li>Custom branding</li>
-                    </ul>
-                    <button class="cta-button">Try Free for 14 Days</button>
-                </div>
-                
-                <div class="pricing-card">
-                    <h3 class="plan-name">Enterprise</h3>
-                    <div class="plan-price">Custom</div>
-                    <ul class="plan-features">
-                        <li>Unlimited users</li>
-                        <li>Unlimited storage</li>
-                        <li>All features included</li>
-                        <li>24/7 dedicated support</li>
-                        <li>Unlimited apps</li>
-                        <li>On-premises option</li>
-                    </ul>
-                    <button class="secondary-button">Contact Sales</button>
+            <div class="win7-card" style="flex-grow:1; display:flex; flex-direction:column;">
+                <div class="card-title">🏆 舞王风云榜</div>
+                <div style="flex-grow:1; overflow-y:auto;">
+                    <table class="rank-table">
+                        <thead><tr><th>排名</th><th>雷王</th><th>时间</th><th>得分</th></tr></thead>
+                        <tbody id="rank-body"></tbody>
+                    </table>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- CTA Section -->
-    <section class="cta-section">
-        <div class="container">
-            <h2>Start Building Today</h2>
-            <p>Join over 10,000 companies that use CodeFlow to accelerate their application development. No credit card required for the free trial.</p>
-            <button class="cta-button">Get Started for Free</button>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-column">
-                    <div class="logo">
-                        <div class="logo-icon"><i class="fas fa-bezier-curve"></i></div>
-                        <div class="logo-text">Code<span>Flow</span></div>
-                    </div>
-                    <p style="margin-top: 20px; color: #aaa;">The leading visual development platform for building enterprise applications with minimal coding.</p>
-                </div>
-                
-                <div class="footer-column">
-                    <h3>Product</h3>
-                    <ul class="footer-links">
-                        <li><a href="#">Features</a></li>
-                        <li><a href="#">Pricing</a></li>
-                        <li><a href="#">Use Cases</a></li>
-                        <li><a href="#">Integrations</a></li>
-                        <li><a href="#">Roadmap</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-column">
-                    <h3>Resources</h3>
-                    <ul class="footer-links">
-                        <li><a href="#">Documentation</a></li>
-                        <li><a href="#">Tutorials</a></li>
-                        <li><a href="#">Blog</a></li>
-                        <li><a href="#">Community</a></li>
-                        <li><a href="#">Support</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-column">
-                    <h3>Company</h3>
-                    <ul class="footer-links">
-                        <li><a href="#">About Us</a></li>
-                        <li><a href="#">Careers</a></li>
-                        <li><a href="#">Contact</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Terms of Service</a></li>
-                    </ul>
-                </div>
+    <div class="result-overlay" id="result-overlay">
+        <div class="result-box">
+            <div class="result-emoji" id="res-emoji">👑</div>
+            <h2 class="result-title" id="res-title">名震全服！</h2>
+            <p class="result-desc" id="res-desc"></p>
+            <div id="hero-input-zone">
+                <input type="text" id="player-hero-name" placeholder="留下你响亮的艺术签名" maxlength="12">
             </div>
-            
-            <div class="copyright">
-                <p>&copy; 2023 CodeFlow. All rights reserved.</p>
+            <div class="action-btn-group">
+                <button class="action-btn btn-primary" id="res-primary-btn" onclick="handleResultPrimary()">留下传说</button>
+                <button class="action-btn btn-secondary" id="res-secondary-btn" onclick="closeResultOverlay()">不理你了，哼 💔</button>
             </div>
         </div>
-    </footer>
+    </div>
 
     <script>
-        // Mobile menu toggle
-        document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
-            const navLinks = document.querySelector('.nav-links');
-            navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
-            
-            // Adjust for mobile
+        const SASSY_WORDS = {
+            click: ["✨ 哎哟~ 点得真准，力道刚刚好...", "⚡ 这指尖触感，让人家酥麻了一下嘛~", "🧐 盲点都能中？你是不是偷偷看穿了人家？", "💦 啪嗒... 最后的防线又被你戳破了一层呢。", "🔥 嘶~ 这该死的、令人欲罢不能的精准度~"],
+            combo: ["🚀 哇哦！大面积真空！被你一网打尽了啦！", "🌀 动作这么粗暴，一下子把人家的秘密全看光了~", "🧬 连续大爆开！这谁顶得住呀，心跳都漏了一拍！", "🔮 丝滑开天门！地雷在你面前都变得温顺了呢~"],
+            flag: ["🚩 盯——！这颗危险的小家伙被你特殊标记了哦~", "🔒 给它戴个安全帽，不可以乱动惹！", "🎯 抓到你了！藏得再深也逃不过人家的法眼~", "💋 盖个印章！这片雷区现在归你管啦~"],
+            critText: ["妙手回春~", "坏透了你~", "灵魂出窍啦~", "屏幕冒烟惹~", "盘他片甲不留~", "闪瞎双眼~", "慢点要翻车啦~", "被你玩坏了~", "绝世舞王！", "嘤嘤嘤！", "你好会哦~", "讨厌啦~"],
+            winDesc: ["小坏蛋，你居然只用了 {time} 秒就让人家无处可藏~ 狂揽 {score} 逆天高分！这优美的舞姿，必须在风云榜上留下你的大名，听话，快写下来~ 👑", "太强了叭！{time} 秒全身而退，地雷在你面前乖巧得像个宠物。不把你的签名挂在荣誉墙上，人家可不依哦~ ✨"],
+            loseDesc: ["💥 哎呀讨厌！刚才还夸你手法好，转眼就让人家炸飞了~ 刚才那下把人家衣服都炸没啦，地雷在旁边笑得花枝乱颤，你赔！", "🥵 呜呜呜... 刚才那步走得太急，一脚踩进雷窝被炸成小花猫了吧？不管，快换个姿势起来继续陪人家盘它嘛~"]
+        };
+
+        // ================= 🔊 WEB AUDIO API 实时音频引擎 =================
+        let audioCtx = null;
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+        // 触发音效前先确保初始化并激活（适配现代浏览器安全策略）
+        function playSound(type) {
+            initAudio();
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            try {
+                audioEngines[type]();
+            } catch(e) {
+                console.log("音频播放受限: ", e);
+            }
+        }
+
+        const audioEngines = {
+            click: () => {
+                let osc = audioCtx.createOscillator();
+                let gain = audioCtx.createGain();
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.04);
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.05);
+            },
+            flag: () => {
+                let osc = audioCtx.createOscillator();
+                let gain = audioCtx.createGain();
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(350, audioCtx.currentTime);
+                osc.frequency.setValueAtTime(180, audioCtx.currentTime + 0.03);
+                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.06);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.06);
+            },
+            combo: () => {
+                let osc = audioCtx.createOscillator();
+                let gain = audioCtx.createGain();
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(1500, audioCtx.currentTime + 0.25);
+                gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.25);
+            },
+            warn: () => {
+                let osc = audioCtx.createOscillator();
+                let gain = audioCtx.createGain();
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(130, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.01, audioCtx.currentTime + 0.08);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.1);
+                
+                let osc2 = audioCtx.createOscillator();
+                let gain2 = audioCtx.createGain();
+                osc2.connect(gain2); gain2.connect(audioCtx.destination);
+                osc2.type = 'sawtooth';
+                osc2.frequency.setValueAtTime(110, audioCtx.currentTime + 0.08);
+                gain2.gain.setValueAtTime(0.15, audioCtx.currentTime + 0.08);
+                gain2.gain.setValueAtTime(0.01, audioCtx.currentTime + 0.18);
+                osc2.start(audioCtx.currentTime + 0.08); osc2.stop(audioCtx.currentTime + 0.18);
+            },
+            explosion: () => {
+                // 低频轰鸣
+                let osc = audioCtx.createOscillator();
+                let gain = audioCtx.createGain();
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(160, audioCtx.currentTime);
+                osc.frequency.linearRampToValueAtTime(40, audioCtx.currentTime + 0.6);
+                gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.6);
+
+                // 白噪声模拟爆炸粉碎声
+                let bufferSize = audioCtx.sampleRate * 0.5;
+                let buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                let data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = Math.random() * 2 - 1;
+                }
+                let noise = audioCtx.createBufferSource();
+                noise.buffer = buffer;
+                let noiseGain = audioCtx.createGain();
+                noise.connect(noiseGain); noiseGain.connect(audioCtx.destination);
+                noiseGain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                noiseGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+                noise.start(); noise.stop(audioCtx.currentTime + 0.5);
+            },
+            victory: () => {
+                let now = audioCtx.currentTime;
+                let notes = [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98, 2093.00]; // C5 E5 G5 C6 E6 G6 C7
+                notes.forEach((freq, index) => {
+                    let osc = audioCtx.createOscillator();
+                    let gain = audioCtx.createGain();
+                    osc.connect(gain); gain.connect(audioCtx.destination);
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, now + index * 0.07);
+                    gain.gain.setValueAtTime(0.15, now + index * 0.07);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + index * 0.07 + 0.3);
+                    osc.start(now + index * 0.07); osc.stop(now + index * 0.07 + 0.3);
+                });
+            }
+        };
+
+        // 默认载入巅峰生死劫配置
+        let Config = { rows: 18, cols: 30, mines: 80, level: 'hard' };
+        let gridData = [];
+        let isGameOver = false, isFirstClick = true;
+        let gameTimer = null, secondsElapsed = 0, currentScore = 0, placedFlags = 0, uncoveredCells = 0;
+        let lastIsWin = false;
+        let isResizingLocked = false; // 🔒 结局弹窗防坍塌尺寸锁
+
+        // 📱 手机触摸变量
+        let touchStartTime = 0;
+        let touchStartPos = { x: 0, y: 0 };
+        let longTouchTimer = null;
+        let isLongPressedTriggered = false;
+
+        const mainCanvas = document.getElementById('mine-canvas');
+        const drawCtx = mainCanvas.getContext('2d');
+        let cellW = 0, cellH = 0;
+
+        window.onload = () => {
+            // 初始化检查：如果是手机端，强行重写默认难度为 20 * 15
             if (window.innerWidth <= 768) {
-                if (navLinks.style.display === 'flex') {
-                    navLinks.style.flexDirection = 'column';
-                    navLinks.style.position = 'absolute';
-                    navLinks.style.top = '80px';
-                    navLinks.style.left = '0';
-                    navLinks.style.width = '100%';
-                    navLinks.style.backgroundColor = 'white';
-                    navLinks.style.padding = '20px';
-                    navLinks.style.boxShadow = '0 10px 20px rgba(0,0,0,0.1)';
-                    
-                    const navItems = document.querySelectorAll('.nav-links li');
-                    navItems.forEach(item => {
-                        item.style.margin = '10px 0';
-                    });
+                Config = { rows: 20, cols: 15, mines: 50, level: 'hard' };
+            }
+            resetAndRestart();
+            renderRankings();
+            
+            window.addEventListener('resize', () => {
+                if (!isResizingLocked) autoResizeCanvas();
+            });
+
+            // 用户触摸屏幕任意地方激活音频上下文权限
+            document.body.addEventListener('touchstart', initAudio, { passive: true });
+            document.body.addEventListener('mousedown', initAudio, { passive: true });
+            
+            mainCanvas.addEventListener('contextmenu', e => e.preventDefault());
+            mainCanvas.addEventListener('mousedown', handleCellMouseDown);
+            mainCanvas.addEventListener('dblclick', handleCellDblClick);
+            
+            mainCanvas.addEventListener('touchstart', handleTouchStart, { passive: true });
+            mainCanvas.addEventListener('touchmove', handleTouchMove, { passive: true });
+            mainCanvas.addEventListener('touchend', handleTouchEnd, { passive: true });
+        };
+
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            document.getElementById('mobile-drawer').style.display = 'none';
+            autoResizeCanvas();
+        }
+
+        // 🖥️ PC 侧边栏按钮难度切换
+        function changeMode(lvl, btn) {
+            document.querySelectorAll('.sidebar button').forEach(b => b.classList.remove('active'));
+            if(btn) btn.classList.add('active');
+            document.getElementById('custom-box').style.display = 'none';
+            setDifficulty(lvl, false);
+        }
+
+        // 📱 手机下拉菜单难度切换
+        function changeModeMobile(lvl) {
+            document.getElementById('mobile-drawer').style.display = 'none';
+            if(lvl === 'custom') {
+                let r = parseInt(prompt("行数 (5-30):", "12")) || 12;
+                let c = parseInt(prompt("列数 (5-20):", "10")) || 10;
+                let m = parseInt(prompt("雷数:", "15")) || 15;
+                Config = { rows: Math.min(r, 30), cols: Math.min(c, 20), mines: m, level: 'custom' };
+                resetAndRestart();
+                return;
+            }
+            setDifficulty(lvl, true);
+        }
+
+        // 🚀 根据平台环境（PC或手机）精准灌注难度比例
+        function setDifficulty(lvl, isMobilePlatform) {
+            if (lvl === 'easy') {
+                Config = { rows: 9, cols: 9, mines: 10, level: 'easy' };
+            } else if (lvl === 'medium') {
+                Config = { rows: 14, cols: 14, mines: 25, level: 'medium' };
+            } else if (lvl === 'hard') {
+                if (isMobilePlatform || window.innerWidth <= 768) {
+                    // 📱 手机端：巅峰生死劫（20×15，50雷）
+                    Config = { rows: 20, cols: 15, mines: 50, level: 'hard' };
+                } else {
+                    // 🖥️ PC端：巅峰生死劫（18×30，80雷）
+                    Config = { rows: 18, cols: 30, mines: 80, level: 'hard' };
                 }
             }
-        });
-        
-        // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                const targetId = this.getAttribute('href');
-                if(targetId === '#') return;
-                
-                const targetElement = document.querySelector(targetId);
-                if(targetElement) {
-                    window.scrollTo({
-                        top: targetElement.offsetTop - 80,
-                        behavior: 'smooth'
-                    });
-                    
-                    // Close mobile menu if open
-                    if(window.innerWidth <= 768) {
-                        document.querySelector('.nav-links').style.display = 'none';
+            resetAndRestart();
+        }
+
+        function toggleCustomPanel(btn) {
+            document.querySelectorAll('.sidebar button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('custom-box').style.display = 'block';
+        }
+
+        function toggleMobileDrawer() {
+            const dr = document.getElementById('mobile-drawer');
+            dr.style.display = (dr.style.display === 'block') ? 'none' : 'block';
+        }
+
+        function applyCustomSettings() {
+            let r = parseInt(document.getElementById('inp-r').value) || 10;
+            let c = parseInt(document.getElementById('inp-c').value) || 10;
+            let m = parseInt(document.getElementById('inp-m').value) || 10;
+            Config = { rows: r, cols: c, mines: m, level: 'custom' };
+            resetAndRestart();
+        }
+
+        function autoResizeCanvas() {
+            const vp = document.getElementById('game-viewport');
+            if (!vp || vp.clientWidth === 0 || vp.clientHeight === 0) return; 
+
+            const dpr = window.devicePixelRatio || 1;
+            const maxW = vp.clientWidth - 10;
+            const maxH = vp.clientHeight - 10;
+
+            let cellSize = Math.min(maxW / Config.cols, maxH / Config.rows);
+            let finalCellSize = cellSize * dpr;
+
+            mainCanvas.width = finalCellSize * Config.cols;
+            mainCanvas.height = finalCellSize * Config.rows;
+            
+            mainCanvas.style.width = `${cellSize * Config.cols}px`;
+            mainCanvas.style.height = `${cellSize * Config.rows}px`;
+
+            cellW = finalCellSize;
+            cellH = finalCellSize;
+
+            redrawGameBoard();
+        }
+
+        function resetAndRestart() {
+            isResizingLocked = false; // 解开防变形锁
+            clearInterval(gameTimer); gameTimer = null;
+            secondsElapsed = 0; currentScore = 0; placedFlags = 0; uncoveredCells = 0;
+            isGameOver = false; isFirstClick = true;
+
+            ['lbl-time', 'm-lbl-time'].forEach(id => document.getElementById(id).innerText = "00:00");
+            ['lbl-score', 'm-lbl-score'].forEach(id => document.getElementById(id).innerText = "0");
+            ['lbl-mines', 'm-lbl-mines'].forEach(id => document.getElementById(id).innerText = Config.mines);
+            updateMarquee("📢 崭新的雷区已铺平，等你来跳盘探戈~");
+
+            gridData = [];
+            for(let r=0; r<Config.rows; r++) {
+                gridData[r] = [];
+                for(let c=0; c<Config.cols; c++) {
+                    gridData[r][c] = { r: r, c: c, isMine: false, isRevealed: false, isFlagged: false, count: 0 };
+                }
+            }
+            autoResizeCanvas();
+        }
+
+        function generateMines(safeR, safeC) {
+            let deployed = 0;
+            while(deployed < Config.mines) {
+                let r = Math.floor(Math.random() * Config.rows);
+                let c = Math.floor(Math.random() * Config.cols);
+                if(!gridData[r][c].isMine && !(Math.abs(r - safeR) <= 1 && Math.abs(c - safeC) <= 1)) {
+                    gridData[r][c].isMine = true;
+                    deployed++;
+                }
+            }
+            for(let r=0; r<Config.rows; r++) {
+                for(let c=0; c<Config.cols; c++) {
+                    if(gridData[r][c].isMine) continue;
+                    let n = 0;
+                    for(let dr=-1; dr<=1; dr++) {
+                        for(let dc=-1; dc<=1; dc++) {
+                            let nr = r + dr, nc = c + dc;
+                            if(nr>=0 && nr<Config.rows && nc>=0 && nc<Config.cols && gridData[nr][nc].isMine) n++;
+                        }
+                    }
+                    gridData[r][c].count = n;
+                }
+            }
+        }
+
+        function redrawGameBoard() {
+            const style = getComputedStyle(document.documentElement);
+            const cTop = style.getPropertyValue('--cell-top').trim();
+            const cMid = style.getPropertyValue('--cell-mid').trim();
+            const cBot = style.getPropertyValue('--cell-bottom').trim();
+            const cOpen = style.getPropertyValue('--cell-open').trim();
+            const cOpenBorder = style.getPropertyValue('--cell-open-border').trim();
+            const tColor = style.getPropertyValue('--text-color').trim();
+
+            drawCtx.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
+            let minS = Math.min(cellW, cellH);
+
+            for (let r = 0; r < Config.rows; r++) {
+                for (let c = 0; c < Config.cols; c++) {
+                    let cell = gridData[r][c];
+                    let x = c * cellW;
+                    let y = r * cellH;
+
+                    if (!cell.isRevealed) {
+                        let grad = drawCtx.createLinearGradient(x, y, x, y + cellH);
+                        grad.addColorStop(0, cTop);
+                        grad.addColorStop(0.4, cMid);
+                        grad.addColorStop(1, cBot);
+                        drawCtx.fillStyle = grad;
+                        drawCtx.fillRect(x + 1, y + 1, cellW - 2, cellH - 2);
+
+                        drawCtx.fillStyle = "rgba(255, 255, 255, 0.25)";
+                        drawCtx.fillRect(x + 1, y + 1, cellW - 2, Math.max(1, minS * 0.08));
+                        drawCtx.fillRect(x + 1, y + 1, Math.max(1, minS * 0.08), cellH - 2);
+                    } else {
+                        drawCtx.fillStyle = cOpen;
+                        drawCtx.fillRect(x, y, cellW, cellH);
+                        drawCtx.strokeStyle = cOpenBorder;
+                        drawCtx.lineWidth = Math.max(1, window.devicePixelRatio || 1);
+                        drawCtx.strokeRect(x, y, cellW, cellH);
+                    }
+
+                    if (cell.isRevealed) {
+                        if (cell.isMine) {
+                            drawCtx.fillStyle = "#222";
+                            drawCtx.beginPath(); drawCtx.arc(x + cellW/2, y + cellH/2, minS * 0.24, 0, Math.PI*2); drawCtx.fill();
+                            drawCtx.strokeStyle = "#ff2266"; drawCtx.lineWidth = Math.max(2, minS * 0.05);
+                            for(let i=0; i<8; i++) {
+                                let ang = (Math.PI / 4) * i;
+                                drawCtx.beginPath(); drawCtx.moveTo(x+cellW/2, y+cellH/2);
+                                drawCtx.lineTo(x+cellW/2 + Math.cos(ang)*minS*0.35, y+cellH/2 + Math.sin(ang)*minS*0.35); drawCtx.stroke();
+                            }
+                        } else if (cell.count > 0) {
+                            drawCtx.font = `bold ${minS * 0.55}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
+                            drawCtx.textAlign = 'center'; drawCtx.textBaseline = 'middle';
+                            const colors = ['#0066ff', '#00aa55', '#ff1166', '#9900ff', '#ff6600', '#00aaaa', '#222', '#777'];
+                            drawCtx.fillStyle = colors[cell.count - 1] || tColor;
+                            drawCtx.fillText(cell.count, x + cellW/2, y + cellH/2);
+                        }
+                    } else if (cell.isFlagged) {
+                        drawCtx.fillStyle = "#ff0000"; 
+                        drawCtx.font = `bold ${minS * 0.6}px sans-serif`;
+                        drawCtx.textAlign = 'center'; drawCtx.textBaseline = 'middle';
+                        drawCtx.fillText("🚩", x + cellW/2, y + cellH/2);
                     }
                 }
-            });
-        });
-        
-        // Simple testimonial slider
-        const testimonials = [
-            {
-                text: "CodeFlow transformed how we deliver solutions to our business units. What used to take 6 months now takes 3 weeks. Our development team can focus on complex problems while business teams build their own solutions.",
-                name: "Sarah Chen",
-                position: "CTO, TechGrowth Inc.",
-                initials: "SC"
-            },
-            {
-                text: "We reduced our app development time by 80% using CodeFlow. The visual interface made it easy for our analysts to build data dashboards without waiting for IT resources.",
-                name: "Marcus Johnson",
-                position: "Director of Operations, DataCorp",
-                initials: "MJ"
-            },
-            {
-                text: "As a non-technical founder, CodeFlow allowed me to build our MVP in just 2 months. I could test ideas quickly and iterate based on user feedback without deep coding knowledge.",
-                name: "Lisa Wang",
-                position: "Founder, StartupLabs",
-                initials: "LW"
             }
-        ];
-        
-        let currentTestimonial = 0;
-        const testimonialElement = document.querySelector('.testimonial');
-        
-        function rotateTestimonial() {
-            currentTestimonial = (currentTestimonial + 1) % testimonials.length;
-            updateTestimonial();
         }
-        
-        function updateTestimonial() {
-            const testimonial = testimonials[currentTestimonial];
-            testimonialElement.innerHTML = `
-                <div class="testimonial-text">"${testimonial.text}"</div>
-                <div class="testimonial-author">
-                    <div class="author-avatar">${testimonial.initials}</div>
-                    <div class="author-info">
-                        <h4>${testimonial.name}</h4>
-                        <p>${testimonial.position}</p>
-                    </div>
-                </div>
-            `;
+
+        function startTimerClock() {
+            if(gameTimer) return;
+            gameTimer = setInterval(() => {
+                secondsElapsed++;
+                let m = String(Math.floor(secondsElapsed / 60)).padStart(2, '0');
+                let s = String(secondsElapsed % 60).padStart(2, '0');
+                ['lbl-time', 'm-lbl-time'].forEach(id => document.getElementById(id).innerText = `${m}:${s}`);
+            }, 1000);
         }
-        
-        // Auto-rotate testimonials every 5 seconds
-        setInterval(rotateTestimonial, 5000);
-        
-        // CTA button interactions
-        document.querySelectorAll('.cta-button').forEach(button => {
-            button.addEventListener('click', function() {
-                alert('Thank you for your interest in CodeFlow! You would be redirected to the signup page in a real implementation.');
-            });
-        });
-        
-        // Pricing card interactions
-        document.querySelectorAll('.pricing-card button').forEach(button => {
-            button.addEventListener('click', function() {
-                const planName = this.closest('.pricing-card').querySelector('.plan-name').textContent;
-                alert(`You selected the ${planName} plan. In a real implementation, you would be redirected to the checkout process.`);
-            });
-        });
+
+        function handleCellMouseDown(e) {
+            if(isGameOver) return;
+            const rect = mainCanvas.getBoundingClientRect();
+            let canvasX = (e.clientX - rect.left) * (mainCanvas.width / rect.width);
+            let canvasY = (e.clientY - rect.top) * (mainCanvas.height / rect.height);
+            let c = Math.floor(canvasX / cellW);
+            let r = Math.floor(canvasY / cellH);
+            
+            if(r<0 || r>=Config.rows || c<0 || c>=Config.cols) return;
+
+            if (e.button === 0) {
+                if (gridData[r][c].isRevealed && gridData[r][c].count > 0) {
+                    smartRevealAround(r, c, e.clientX, e.clientY);
+                } else {
+                    revealCell(r, c, e.clientX, e.clientY);
+                }
+            }
+            else if (e.button === 2) flagCell(r, c);
+        }
+
+        function handleCellDblClick(e) {
+            if(isGameOver) return;
+            const rect = mainCanvas.getBoundingClientRect();
+            let canvasX = (e.clientX - rect.left) * (mainCanvas.width / rect.width);
+            let canvasY = (e.clientY - rect.top) * (mainCanvas.height / rect.height);
+            let c = Math.floor(canvasX / cellW);
+            let r = Math.floor(canvasY / cellH);
+            
+            if(r<0 || r>=Config.rows || c<0 || c>=Config.cols) return;
+            if (gridData[r][c].isRevealed && gridData[r][c].count > 0) {
+                smartRevealAround(r, c, e.clientX, e.clientY);
+            }
+        }
+
+        function smartRevealAround(r, c, screenX, screenY) {
+            let cell = gridData[r][c];
+            let flagCount = 0;
+            
+            for(let dr=-1; dr<=1; dr++) {
+                for(let dc=-1; dc<=1; dc++) {
+                    let nr = r + dr, nc = c + dc;
+                    if(nr>=0 && nr<Config.rows && nc>=0 && nc<Config.cols) {
+                        if(gridData[nr][nc].isFlagged) flagCount++;
+                    }
+                }
+            }
+
+            if(flagCount === cell.count) {
+                let totalUncoveredBefore = uncoveredCells;
+                let hitMine = false;
+                let lastMineCoord = {x: screenX, y: screenY};
+
+                for(let dr=-1; dr<=1; dr++) {
+                    for(let dc=-1; dc<=1; dc++) {
+                        let nr = r + dr, nc = c + dc;
+                        if(nr>=0 && nr<Config.rows && nc>=0 && nc<Config.cols) {
+                            let nCell = gridData[nr][nc];
+                            if(!nCell.isRevealed && !nCell.isFlagged) {
+                                nCell.isRevealed = true;
+                                uncoveredCells++;
+                                currentScore += 15;
+
+                                if(nCell.isMine) {
+                                    hitMine = true;
+                                    const rect = mainCanvas.getBoundingClientRect();
+                                    lastMineCoord.x = rect.left + (nc * cellW + cellW/2) * (rect.width / mainCanvas.width);
+                                    lastMineCoord.y = rect.top + (nr * cellH + cellH/2) * (rect.height / mainCanvas.height);
+                                } else if(nCell.count === 0) {
+                                    openChainCells(nr, nc);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                let diff = uncoveredCells - totalUncoveredBefore;
+                if(diff > 0 && screenX && screenY) {
+                    createCritAnim(screenX, screenY, diff);
+                }
+
+                if(hitMine) {
+                    playSound('explosion'); // 🔊 智能双手划开踩雷爆炸
+                    if(window.navigator.vibrate) window.navigator.vibrate([80, 40, 80]);
+                    triggerScreenShake();
+                    endGameProcess(false);
+                    return;
+                }
+
+                if(diff > 3) {
+                    playSound('combo'); // 🔊 智能双手划开大面积爆发
+                    triggerScreenShake();
+                    let list = SASSY_WORDS.combo;
+                    updateMarquee(list[Math.floor(Math.random() * list.length)]);
+                    currentScore += diff * 10;
+                } else if (diff > 0) {
+                    playSound('click'); // 🔊 普通双手划开
+                }
+
+                ['lbl-score', 'm-lbl-score'].forEach(id => document.getElementById(id).innerText = currentScore);
+                redrawGameBoard();
+                
+                if(uncoveredCells === (Config.rows * Config.cols) - Config.mines) {
+                    endGameProcess(true);
+                }
+            } else {
+                playSound('warn'); // 🔊 划开数量对不上警告音
+                updateMarquee("⚠️ 周围旗子数不对哦，无法使用智能双手划开~");
+            }
+        }
+
+        function handleTouchStart(e) {
+            if(isGameOver) return;
+            const touch = e.touches[0];
+            touchStartTime = Date.now();
+            touchStartPos = { x: touch.clientX, y: touch.clientY };
+            isLongPressedTriggered = false;
+
+            const rect = mainCanvas.getBoundingClientRect();
+            let canvasX = (touch.clientX - rect.left) * (mainCanvas.width / rect.width);
+            let canvasY = (touch.clientY - rect.top) * (mainCanvas.height / rect.height);
+            let c = Math.floor(canvasX / cellW);
+            let r = Math.floor(canvasY / cellH);
+
+            longTouchTimer = setTimeout(() => {
+                isLongPressedTriggered = true;
+                if(window.navigator.vibrate) window.navigator.vibrate(35);
+                flagCell(r, c);
+            }, 350);
+        }
+
+        function handleTouchMove(e) {
+            const touch = e.touches[0];
+            if (Math.abs(touch.clientX - touchStartPos.x) > 12 || Math.abs(touch.clientY - touchStartPos.y) > 12) {
+                clearTimeout(longTouchTimer);
+            }
+        }
+
+        function handleTouchEnd(e) {
+            clearTimeout(longTouchTimer);
+            if (isGameOver || isLongPressedTriggered) return;
+
+            if (Date.now() - touchStartTime < 350) {
+                let coords = gridRowFromX(touchStartPos.x, touchStartPos.y);
+                let r = coords.r, c = coords.c;
+                if(r<0 || r>=Config.rows || c<0 || c>=Config.cols) return;
+
+                if(gridData[r][c].isRevealed && gridData[r][c].count > 0) {
+                    smartRevealAround(r, c, touchStartPos.x, touchStartPos.y);
+                } else {
+                    revealCell(r, c, touchStartPos.x, touchStartPos.y);
+                }
+            }
+        }
+
+        function gridRowFromX(screenX, screenY) {
+            const rect = mainCanvas.getBoundingClientRect();
+            let canvasX = (screenX - rect.left) * (mainCanvas.width / rect.width);
+            let canvasY = (screenY - rect.top) * (mainCanvas.height / rect.height);
+            return {
+                r: Math.floor(canvasY / cellH),
+                c: Math.floor(canvasX / cellW)
+            };
+        }
+
+        function updateMarquee(txt) {
+            const box1 = document.getElementById('sassy-marquee-box');
+            const box2 = document.getElementById('mobile-marquee-box');
+            if(box1) box1.innerText = txt;
+            if(box2) box2.innerText = txt;
+        }
+
+        function flagCell(r, c) {
+            if(r<0 || r>=Config.rows || c<0 || c>=Config.cols || gridData[r][c].isRevealed) return;
+            gridData[r][c].isFlagged = !gridData[r][c].isFlagged;
+            placedFlags += gridData[r][c].isFlagged ? 1 : -1;
+            
+            playSound('flag'); // 🔊 插旗/拔旗音效
+            
+            let displayMines = Math.max(0, Config.mines - placedFlags);
+            ['lbl-mines', 'm-lbl-mines'].forEach(id => document.getElementById(id).innerText = displayMines);
+            
+            if(gridData[r][c].isFlagged) {
+                let list = SASSY_WORDS.flag;
+                updateMarquee(list[Math.floor(Math.random() * list.length)]);
+            }
+            redrawGameBoard();
+        }
+
+        function revealCell(r, c, screenX, screenY) {
+            if(r<0 || r>=Config.rows || c<0 || c>=Config.cols) return;
+            let cell = gridData[r][c];
+            if(cell.isRevealed || cell.isFlagged) return;
+
+            if(isFirstClick) {
+                isFirstClick = false;
+                generateMines(r, c);
+                startTimerClock();
+            }
+
+            let oldUncovered = uncoveredCells;
+            cell.isRevealed = true;
+            uncoveredCells++;
+            currentScore += 15;
+
+            if(cell.isMine) {
+                playSound('explosion'); // 🔊 踩雷爆炸音效
+                if(window.navigator.vibrate) window.navigator.vibrate([80, 40, 80]);
+                triggerScreenShake();
+                endGameProcess(false);
+                return;
+            }
+
+            if(cell.count === 0) openChainCells(r, c);
+
+            let diff = uncoveredCells - oldUncovered;
+            if(screenX && screenY) createCritAnim(screenX, screenY, diff);
+
+            if(diff > 3) {
+                playSound('combo'); // 🔊 大面积连锁爆开音效
+                triggerScreenShake();
+                let list = SASSY_WORDS.combo;
+                updateMarquee(list[Math.floor(Math.random() * list.length)]);
+                currentScore += diff * 10;
+            } else {
+                playSound('click'); // 🔊 单点翻开普通音效
+                let list = SASSY_WORDS.click;
+                updateMarquee(list[Math.floor(Math.random() * list.length)]);
+            }
+
+            ['lbl-score', 'm-lbl-score'].forEach(id => document.getElementById(id).innerText = currentScore);
+            redrawGameBoard();
+            
+            if(uncoveredCells === (Config.rows * Config.cols) - Config.mines) {
+                endGameProcess(true);
+            }
+        }
+
+        function openChainCells(r, c) {
+            for(let dr=-1; dr<=1; dr++) {
+                for(let dc=-1; dc<=1; dc++) {
+                    let nr = r + dr, nc = c + dc;
+                    if(nr>=0 && nr<Config.rows && nc>=0 && nc<Config.cols) {
+                        let nCell = gridData[nr][nc];
+                        if(!nCell.isRevealed && !nCell.isFlagged && !nCell.isMine) {
+                            nCell.isRevealed = true;
+                            uncoveredCells++;
+                            if(nCell.count === 0) openChainCells(nr, nc);
+                        }
+                    }
+                }
+            }
+        }
+
+        function createCritAnim(screenX, screenY, count) {
+            if(!screenX || !screenY) return;
+            const el = document.createElement('div');
+            el.className = 'crit-text';
+            
+            let word = SASSY_WORDS.critText[Math.floor(Math.random() * SASSY_WORDS.critText.length)];
+            if(count > 1) {
+                el.innerHTML = `<span style="color:#ffffff; -webkit-text-stroke: 1px #000;">${word}</span><br><span style="color:#ffcc00; font-size:18px;">连击展开 +${count}!</span>`;
+            } else {
+                el.innerText = word;
+            }
+            
+            el.style.left = `${screenX}px`;
+            el.style.top = `${screenY}px`;
+            
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 1200);
+        }
+
+        function triggerScreenShake() {
+            const vp = document.getElementById('game-viewport');
+            if(vp) {
+                vp.classList.add('shake-screen');
+                setTimeout(() => vp.classList.remove('shake-screen'), 150);
+            }
+        }
+
+        function endGameProcess(isWin) {
+            isGameOver = true;
+            lastIsWin = isWin;
+            clearInterval(gameTimer);
+            isResizingLocked = true; // 🔒 结局弹窗载入前开启锁定状态，防止 Canvas 坍塌成黑点
+
+            for(let r=0; r<Config.rows; r++) {
+                for(let c=0; c<Config.cols; c++) if(gridData[r][c].isMine) gridData[r][c].isRevealed = true;
+            }
+            redrawGameBoard();
+
+            if (isWin) {
+                playSound('victory'); // 🔊 胜利通关复古 8-bit 音乐
+            }
+
+            setTimeout(() => {
+                const overlay = document.getElementById('result-overlay');
+                const emojiEl = document.getElementById('res-emoji');
+                const titleEl = document.getElementById('res-title');
+                const descEl = document.getElementById('res-desc');
+                const inputZone = document.getElementById('hero-input-zone');
+                const primaryBtn = document.getElementById('res-primary-btn');
+                const secondaryBtn = document.getElementById('res-secondary-btn');
+
+                if(!overlay) return;
+                overlay.className = "result-overlay";
+                
+                if(isWin) {
+                    overlay.classList.add('win-state', 'active');
+                    if(emojiEl) emojiEl.innerText = "👑";
+                    if(titleEl) titleEl.innerText = "哎呀好会~ 征服人家了啦！";
+                    let txt = SASSY_WORDS.winDesc[Math.floor(Math.random() * SASSY_WORDS.winDesc.length)];
+                    if(descEl) descEl.innerHTML = txt.replace("{time}", secondsElapsed).replace("{score}", currentScore);
+                    if(inputZone) inputZone.style.display = "block";
+                    if(primaryBtn) primaryBtn.innerText = "赏你们一个大名 💅";
+                    if(secondaryBtn) secondaryBtn.innerText = "低调退场~";
+                } else {
+                    overlay.classList.add('lose-state', 'active');
+                    if(emojiEl) emojiEl.innerText = "🥵";
+                    if(titleEl) titleEl.innerText = "翻车了叭~ 亲口踩雷惹";
+                    if(descEl) descEl.innerText = SASSY_WORDS.loseDesc[Math.floor(Math.random() * SASSY_WORDS.loseDesc.length)];
+                    if(inputZone) inputZone.style.display = "none";
+                    if(primaryBtn) primaryBtn.innerText = "再让人家爽一把 🥵";
+                    if(secondaryBtn) secondaryBtn.innerText = "不理你了，哼 💔";
+                    updateMarquee("🥀 呜呜呜，刚才那下把人家衣服都炸没啦...");
+                }
+                overlay.style.display = "flex";
+            }, 400);
+        }
+
+        function handleResultPrimary() {
+            if(lastIsWin) submitHeroRecord();
+            else { closeResultOverlay(); resetAndRestart(); }
+        }
+
+        function submitHeroRecord() {
+            const inputName = document.getElementById('player-hero-name');
+            const hName = (inputName ? inputName.value.trim() : "") || "神秘舞王";
+            let localData = JSON.parse(localStorage.getItem('win7_sweeper_v2_scores')) || [];
+            localData.push({ name: hName, time: `${secondsElapsed}s`, score: currentScore });
+            localData.sort((a,b) => b.score - a.score);
+            localStorage.setItem('win7_sweeper_v2_scores', JSON.stringify(localData.slice(0, 8)));
+
+            if(inputName) inputName.value = "";
+            renderRankings();
+            closeResultOverlay();
+            resetAndRestart();
+        }
+
+        function closeResultOverlay() {
+            const overlay = document.getElementById('result-overlay');
+            if(overlay) {
+                overlay.classList.remove('active');
+                setTimeout(() => { 
+                    overlay.style.display = "none"; 
+                    isResizingLocked = false; // 顺畅释放缩放锁
+                }, 300);
+            }
+        }
+
+        function renderRankings() {
+            const localData = JSON.parse(localStorage.getItem('win7_sweeper_v2_scores')) || [];
+            const tbody = document.getElementById('rank-body');
+            if(!tbody) return;
+            tbody.innerHTML = "";
+            for(let i=0; i<8; i++) {
+                const tr = document.createElement('tr');
+                if(localData[i]) {
+                    tr.innerHTML = `<td>${i+1}</td><td style="font-weight:bold;">${localData[i].name}</td><td>${localData[i].time}</td><td style="color:var(--accent-color);font-weight:bold;">${localData[i].score}</td>`;
+                } else {
+                    tr.innerHTML = `<td>${i+1}</td><td>-</td><td>-</td><td>-</td>`;
+                }
+                tbody.appendChild(tr);
+            }
+        }
     </script>
 </body>
 </html>
